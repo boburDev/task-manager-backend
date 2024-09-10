@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import Task from '../models/task';
-import { IUser } from '../models/user';
 
 export const getTasks = async (req: Request, res: Response) => {
     try {
