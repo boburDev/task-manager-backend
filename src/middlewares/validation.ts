@@ -25,3 +25,10 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
         return res.status(400).json({ message: 'Token not verified!', error: true });
     }
 };
+
+export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
+    if (req.user?.role !== 'admin') {
+        return res.status(403).json({ message: 'Access Denied: Admins Only' });
+    }
+    next();
+};
