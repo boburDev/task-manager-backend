@@ -14,8 +14,9 @@ export const signup = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, password: hashedPassword, role });
         await newUser.save();
-        const token = jwt.sign({ id: newUser._id }, secretKey!, { expiresIn: '1h' });
-        res.status(201).json({ ...(enter && { token }), message: 'User registered successfully' });
+        const token = jwt.sign({ id: newUser._id, role: newUser.role }, secretKey!, { expiresIn: '1h' });
+        const userPayload = { username: newUser.username, role: newUser.role }
+        res.status(201).json({ ...(enter && { token }), user: userPayload, message: 'User registered successfully' });
     } catch (error: unknown) {
         console.log(error);
         res.status(500).json({ data: null, error: (error as Error).message })
@@ -31,8 +32,10 @@ export const login = async (req:Request, res: Response) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
 
-        const token = jwt.sign({ id: user._id }, secretKey!, { expiresIn: '1h' });
-        res.json({ token, user: { id: user._id, username: user.username, role: user.role } });
+        const token = jwt.sign({ id: user._id, role: user.role }, secretKey!, { expiresIn: '1h' });
+        const userPayload = { username: user.username, role: user.role }
+
+        res.json({ token, user: userPayload });
     } catch (error:unknown) {
         res.status(500).json({ data: null, error: (error as Error).message })
     }

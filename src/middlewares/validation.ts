@@ -17,6 +17,8 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
         if (!decoded) throw new Error("Invalid token!");
 
         const user = await User.findById(decoded.id);
+        console.log(1, user)
+        
         if (!user) throw new Error('User not found!');
 
         req.user = decoded
@@ -27,6 +29,8 @@ export const validateJWT = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const validateAdmin = (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.user)
+    
     if (req.user?.role !== 'admin') {
         return res.status(403).json({ message: 'Access Denied: Admins Only' });
     }
