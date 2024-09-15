@@ -13,8 +13,6 @@ let loginAttempts: LoginAttempts = {};
 
 export function loginAttemptLimiter(req: Request, res: Response, next: NextFunction) {
     const ip = req.ip || '';
-    console.log(ip);
-    
     const currentTime = Date.now();
     const loginLimit = 5;
     const blockDuration = 5 * 60 * 1000;
