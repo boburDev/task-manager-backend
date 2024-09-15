@@ -8,7 +8,6 @@ export function verify(token: string): IUser | null {
         const decoded: IUser = jwt.verify(token, secretKey) as IUser;
         return decoded;
     } catch (error) {
-        console.error('Token verification error:', (error as Error).message);
         return null;
     }
 }

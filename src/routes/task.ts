@@ -9,6 +9,7 @@ router
     .post('/create', validateJWT, Task.createTask)
     .put('/update/:id', validateJWT, Task.updateTask)
     .delete('/delete/:id', validateJWT, Task.deleteTask)
-    .get('/dashboard', validateJWT, validateAdmin, Task.getAnalytics);
+    .get('/pie-chart', validateJWT, validateAdmin, Task.getAnalytics)
+    .get('/user-tasks', validateJWT, validateAdmin, Task.getUserTaskAnalytics);
 
 export default router

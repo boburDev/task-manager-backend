@@ -18,7 +18,6 @@ export const signup = async (req: Request, res: Response) => {
         const userPayload = { email: newUser.email, role: newUser.role }
         res.status(201).json({ ...(enter && { token }), user: userPayload, message: 'User registered successfully' });
     } catch (error: unknown) {
-        console.log(error);
         res.status(500).json({ data: null, error: (error as Error).message })
     }
 }
