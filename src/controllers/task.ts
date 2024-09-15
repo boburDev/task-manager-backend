@@ -4,8 +4,8 @@ import Task from '../models/task';
 export const getTasks = async (req: Request, res: Response) => {
     try {
         const tasks = req.user?.role === 'admin' ?
-        await Task.find().populate('userId', 'username') :
-        await Task.find({ userId: req.user?.id });
+            await Task.find().populate('userId', 'username') :
+            await Task.find({ userId: req.user?.id });
         res.json(tasks);
     } catch (error) {
         res.status(500).json({ data: null, error: (error as Error).message })
@@ -53,7 +53,17 @@ export const deleteTask = async (req: Request, res: Response) => {
 export const getAnalytics = async (req: Request, res: Response) => {
     try {
         const analytics = await Task.aggregate([
-            { $group: { _id: '$userId', totalTasks: { $count: {} }, completedTasks: { $sum: { $cond: ['$completed', 1, 0] } } } },
+            {
+                $group: {
+                    _id: '$userId',
+                    totalTasks: { $count: {} },
+                    completedTasks: {
+                        $sum: {
+                            $cond: ['$completed', 1, 0]
+                        }
+                    }
+                }
+            },
         ]);
 
         res.json(analytics);
