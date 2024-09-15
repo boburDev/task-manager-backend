@@ -5,7 +5,7 @@ export const getTasks = async (req: Request, res: Response) => {
     try {
         const tasks = req.user?.role === 'admin' ?
         await Task.find().populate('userId', 'username') :
-        await Task.find({ userId: req.user?._id });
+        await Task.find({ userId: req.user?.id });
         res.json(tasks);
     } catch (error) {
         res.status(500).json({ data: null, error: (error as Error).message })
@@ -15,7 +15,7 @@ export const getTasks = async (req: Request, res: Response) => {
 export const createTask = async (req: Request, res: Response) => {
     try {
         const { title, description } = req.body;
-        const task = new Task({ title, description, userId: req.user?._id });
+        const task = new Task({ title, description, userId: req.user?.id });
         await task.save();
         res.status(201).json(task);
     } catch (error) {

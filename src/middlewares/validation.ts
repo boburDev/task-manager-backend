@@ -11,7 +11,7 @@ declare module 'express-serve-static-core' {
 export const validateJWT = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.token;
     if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
-
+    
     try {
         let decoded: IUser | null = verify(String(token));
         if (!decoded) throw new Error("Invalid token!");

@@ -3,6 +3,8 @@ import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+const secretKey: string = process.env.SECRET_KEY || 'there_is_bad_guy'
+
 export const signup = async (req: Request, res: Response) => {
     try {
         const { username, password, role='user', enter=false } = req.body;
@@ -12,9 +14,10 @@ export const signup = async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, password: hashedPassword, role });
         await newUser.save();
-        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const token = jwt.sign({ id: newUser._id }, secretKey!, { expiresIn: '1h' });
         res.status(201).json({ ...(enter && { token }), message: 'User registered successfully' });
     } catch (error: unknown) {
+        console.log(error);
         res.status(500).json({ data: null, error: (error as Error).message })
     }
 }
@@ -28,10 +31,10 @@ export const login = async (req:Request, res: Response) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, secretKey!, { expiresIn: '1h' });
         res.json({ token, user: { id: user._id, username: user.username, role: user.role } });
     } catch (error:unknown) {
-        res.status(500).json({ data: null, error: (error as Error).message})
+        res.status(500).json({ data: null, error: (error as Error).message })
     }
 }
 
